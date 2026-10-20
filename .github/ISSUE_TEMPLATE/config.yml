@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: A security vulnerability
+    url: https://github.com/xenia-platform/releases/security/advisories/new
+    about: Report it privately, not in an issue; see SECURITY.md.
+  - name: The docs
+    url: https://xenia-platform.github.io
+    about: Configuration, running, Docker and deployment.

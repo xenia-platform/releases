@@ -1,0 +1,52 @@
+Xenia License
+
+Copyright (c) 2026 Andrei Tretyakov. All rights reserved.
+
+"The Software" means the xenia program in the forms its author publishes
+it: the executable binaries, the container images and the files that come
+with them (documentation, examples, type definitions, service files). The
+source code of xenia is not part of this license and is not licensed to
+anyone.
+
+1. Use. You may install, run and use the Software, for any purpose,
+   commercial or not, on any number of machines, free of charge. You may
+   use it to serve your own and your customers' services, and run it as
+   part of the systems you build, host or deploy for others.
+
+2. Copies. You may make and keep copies of the Software, and redistribute
+   copies that are complete and unmodified, together with this license and
+   the third-party notices that come with them: for example in mirrors,
+   private registries, base images, or with a product that runs it. You may
+   not charge for the Software itself.
+
+3. Configuration and examples. The examples, the type definitions and the
+   service files may be copied, changed and used in your own projects
+   without restriction. Configurations you write are yours.
+
+4. Restrictions. Except as this license allows, or as applicable law allows
+   regardless of this restriction, you may not:
+   - modify the binaries or the programs in the images, or redistribute
+     modified copies of them;
+   - reverse engineer, decompile or disassemble them;
+   - remove or change the copyright, license or third-party notices;
+   - sublicense the Software, or offer it under other terms.
+
+5. Third-party components. The Software contains third-party libraries
+   under their own licenses, listed in THIRD_PARTY_LICENSES (in an image,
+   under /licenses). Those licenses, not this one, govern those
+   components, and nothing here limits the rights they give you.
+
+6. No warranty. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY
+   KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+
+7. No liability. IN NO EVENT SHALL THE AUTHOR OR COPYRIGHT HOLDER BE LIABLE
+   FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+   CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
+   THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+8. Termination. If you break these terms, your rights under this license
+   end. They come back if you stop within 30 days of learning of it.
+
+9. Later versions. The author may publish later versions of the Software
+   under other terms. The version you have stays under this license.

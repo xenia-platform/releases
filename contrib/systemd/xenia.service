@@ -1,0 +1,55 @@
+# xenia as a systemd service (systemd 253 or later, for Type=notify-reload).
+#
+#   useradd --system --no-create-home --shell /usr/sbin/nologin xenia
+#   install -m 755 xenia /usr/local/bin/xenia
+#   install -m 644 xenia.service /etc/systemd/system/xenia.service
+#   (the config in /etc/xenia/xenia.conf.js, readable by xenia, keys included)
+#   systemctl daemon-reload && systemctl enable --now xenia
+#
+# systemctl reload xenia recompiles the config and waits for the outcome;
+# xenia ctl, with XENIA_ADMIN=/run/xenia/admin.sock and run as xenia (or
+# root), reaches the admin interface. With an older systemd: Type=notify
+# and ExecReload=/bin/kill -HUP $MAINPID.
+
+[Unit]
+Description=xenia HTTP server
+Documentation=https://xenia-platform.github.io/deployment/
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=notify-reload
+ExecStart=/usr/local/bin/xenia \
+    --config /etc/xenia/xenia.conf.js \
+    --listen 0.0.0.0:80 --listen [::]:80 \
+    --admin /run/xenia/admin.sock \
+    --access-log /var/log/xenia/access.log
+# systemd drops privileges itself: xenia starts as xenia, allowed only to
+# bind ports below 1024. (--user is for launchers that cannot.)
+User=xenia
+Group=xenia
+AmbientCapabilities=CAP_NET_BIND_SERVICE
+CapabilityBoundingSet=CAP_NET_BIND_SERVICE
+NoNewPrivileges=yes
+# /run/xenia and /var/log/xenia, made for and owned by xenia; everything
+# else is read-only to it.
+RuntimeDirectory=xenia
+LogsDirectory=xenia
+WorkingDirectory=/etc/xenia
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6 AF_NETLINK
+RestrictNamespaces=yes
+LockPersonality=yes
+LimitNOFILE=65536
+# SIGTERM drains (server.shutdownTimeout, 10 s by default); a second ends it.
+TimeoutStopSec=30
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
