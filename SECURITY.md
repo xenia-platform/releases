@@ -18,4 +18,4 @@ Fixes go into the newest minor version (`0.X`). Until 1.0, upgrading to it is th
 
 ## Scope
 
-Xenia itself, as published here and as `ofkindness/xenia` on Docker Hub: the server, its HTTP/1.1, HTTP/2 and TLS handling, the proxy and cache, the admin interface, and the config compiler. Vulnerabilities in a bundled library (see THIRD_PARTY_LICENSES) are in scope when xenia's use of it is affected; we then update the library in a new release.
+Xenia itself, as published here and as `ofkindness/xenia` on Docker Hub: the server, its HTTP/1.1, HTTP/2 and TLS handling, the proxy and cache, the admin interface, and the config compiler. Vulnerabilities in a bundled library (see [THIRD_PARTY_LICENSES](THIRD_PARTY_LICENSES)) are in scope when xenia's use of it is affected; we then update the library in a new release.

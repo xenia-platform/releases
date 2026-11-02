@@ -1,0 +1,18 @@
+# The project docs/getting-started.md builds: xenia in front, serving www/
+# and an API, over HTTP and HTTPS. Run it here with: docker compose up -d
+services:
+  xenia:
+    image: ofkindness/xenia:0.16.0
+    ports: ["80:8080", "443:8443"]
+    volumes: ["./:/etc/xenia:ro"]
+    command: ["--listen", "0.0.0.0:8080", "--listen-tls", "0.0.0.0:8443",
+              "--admin", "/run/xenia/admin.sock", "--access-log", "-"]
+    read_only: true
+    tmpfs: ["/run/xenia:uid=65532,gid=65532"]
+    stop_grace_period: 30s
+    restart: unless-stopped
+    depends_on: [api]
+  api:
+    # A small app that answers with the request it got.
+    image: traefik/whoami:v1.11.0@sha256:200689790a0a0ea48ca45992e0450bc26ccab5307375b41c84dfc4f2475937ab
+    restart: unless-stopped

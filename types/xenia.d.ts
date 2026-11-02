@@ -1,4 +1,4 @@
-// Types for xenia 0.15.1 configs, from `xenia types`: run it again after
+// Types for xenia 0.16.0 configs, from `xenia types`: run it again after
 // upgrading xenia. The rules in full:
 // https://xenia-platform.github.io/configuration/
 
@@ -80,6 +80,7 @@ declare module 'xenia' {
   /** What only file routes have. */
   interface NoFileFields {
     root?: never;
+    file?: never;
     index?: never;
     listing?: never;
     precompressed?: never;
@@ -150,6 +151,7 @@ declare module 'xenia' {
       path?: never;
       /** The directory, relative to the config file. */
       root: string;
+      file?: never;
       /** File routes answer `GET` and `HEAD`. @default 'GET' */
       method?: 'GET';
       /** A name or up to 8: the file to serve for a directory; `[]` for none. @default ['index.html'] */
@@ -167,7 +169,32 @@ declare module 'xenia' {
       body?: never;
     };
 
-  export type Route = StaticRoute | ProxyRoute | FileRoute;
+  /**
+   * A route that serves one file: on its path, or for every path under its
+   * prefix (an SPA's `index.html`, while longer prefixes go elsewhere).
+   */
+  export type SingleFileRoute = RouteBase &
+    Match &
+    NoProxyFields & {
+      /** The file, relative to the config file. Its name gives the content type. */
+      file: string;
+      root?: never;
+      /** Single-file routes answer `GET` and `HEAD`. @default 'GET' */
+      method?: 'GET';
+      /** Serve `name.br` or `name.gz` beside the file to clients that take them. @default false */
+      precompressed?: boolean;
+      /** Serve the file through a symbolic link. @default false */
+      followSymlinks?: boolean;
+      /** Up to 64 extensions and their content types, over the built-in ones: `{ md: 'text/markdown' }`. */
+      contentTypes?: Record<string, string>;
+      index?: never;
+      listing?: never;
+      status?: never;
+      contentType?: never;
+      body?: never;
+    };
+
+  export type Route = StaticRoute | ProxyRoute | FileRoute | SingleFileRoute;
 
   /** Timeouts are seconds, 0.05-3600. */
   export interface Server {
@@ -181,6 +208,11 @@ declare module 'xenia' {
     shutdownTimeout?: Seconds;
     /** Open connections per process. @default 10000 */
     maxConnections?: number;
+    /**
+     * Open connections per client address (IPv6 by its /64), 1 to 1,000,000;
+     * more are closed at accept. Trusted proxies are not counted. @default none
+     */
+    maxConnectionsPerClient?: number;
     /** Bytes in a proxied request body. @default 16777216 */
     maxRequestBody?: number;
     /** Keep a client's well-formed `X-Request-Id`. @default false */
@@ -262,6 +294,12 @@ declare module 'xenia' {
     sessionTickets?: boolean;
     /** Plain HTTP requests get `308` to HTTPS. @default false */
     redirect?: boolean;
+    /**
+     * The port redirects send clients to, when it isn't the first `--listen-tls` port: in a
+     * container behind `-p 443:8443`, 443. Left out of the URL when it is 443; needs `redirect`.
+     * @default the first `--listen-tls` port
+     */
+    redirectPort?: number;
     /** `Strict-Transport-Security` on TLS responses: `true` is a year. @default false */
     hsts?: boolean | Hsts;
   }
@@ -294,11 +332,23 @@ declare module 'xenia' {
     preload?: boolean;
   }
 
-  export interface Limit {
+  /** A limit per client: a rate, requests in flight, or both. */
+  export type Limit = LimitBase &
+    (
+      | { rate: number; inFlight?: number }
+      | { inFlight: number; rate?: never; burst?: never }
+    );
+
+  interface LimitBase {
     /** Requests a second, fractions allowed: one a day to a million a second. */
-    rate: number;
-    /** How many may come at once, 1 to 1,000,000. @default the rate rounded up, at least 1 */
+    rate?: number;
+    /** How many may come at once, 1 to 1,000,000; with a rate. @default the rate rounded up, at least 1 */
     burst?: number;
+    /**
+     * Requests at once on proxy and file routes, 1 to 65,536; more get `429`.
+     * A WebSocket counts until it closes.
+     */
+    inFlight?: number;
     /** Clients tracked at once, 1,024 to 4,194,304. @default 65536 */
     clients?: number;
   }

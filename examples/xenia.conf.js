@@ -35,6 +35,7 @@ export default defineConfig({
   //       clients: { ca: 'certs/staff-ca.pem', crl: 'certs/staff.crl' } },
   //   ],
   //   redirect: true,              // plain HTTP gets 308 to https://
+  //   redirectPort: 443,           // ...on this port, if clients reach another than --listen-tls
   //   hsts: { maxAge: 31536000 },  // seconds
   // },
 
